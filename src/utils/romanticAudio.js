@@ -128,26 +128,82 @@ class RomanticSoundManager {
     });
   }
 
-  // Special sound effect: Soft click/heart pop
-  playHeartPop() {
+  // Natural, tactile mouse click sound (organic microswitch tap)
+  playClick() {
     this.init();
-    try {
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(350, this.ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(650, this.ctx.currentTime + 0.15);
+    if (!this.ctx) return;
 
-      gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.2);
-
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-      osc.start();
-      osc.stop(this.ctx.currentTime + 0.2);
-    } catch (e) {
-      console.warn(e);
+    // Prevent double clicks within 45ms
+    const nowMs = Date.now();
+    if (this.lastClickTime && nowMs - this.lastClickTime < 45) {
+      return;
     }
+    this.lastClickTime = nowMs;
+
+    try {
+      const now = this.ctx.currentTime;
+
+      // 1. Ultra-short noise transient (physical mechanical switch texture, ~4ms)
+      const bufferSize = Math.floor(this.ctx.sampleRate * 0.005);
+      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.25));
+      }
+      const noise = this.ctx.createBufferSource();
+      noise.buffer = buffer;
+
+      const noiseFilter = this.ctx.createBiquadFilter();
+      noiseFilter.type = 'bandpass';
+      noiseFilter.frequency.setValueAtTime(2800, now);
+      noiseFilter.Q.setValueAtTime(1.8, now);
+
+      const noiseGain = this.ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.045, now);
+      noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.006);
+
+      noise.connect(noiseFilter);
+      noiseFilter.connect(noiseGain);
+      noiseGain.connect(this.ctx.destination);
+      noise.start(now);
+
+      // 2. Crisp switch snap (rapid descending sine transient, ~8ms)
+      const oscSnap = this.ctx.createOscillator();
+      const snapGain = this.ctx.createGain();
+      oscSnap.type = 'sine';
+      oscSnap.frequency.setValueAtTime(2200, now);
+      oscSnap.frequency.exponentialRampToValueAtTime(800, now + 0.008);
+
+      snapGain.gain.setValueAtTime(0.04, now);
+      snapGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.01);
+
+      oscSnap.connect(snapGain);
+      snapGain.connect(this.ctx.destination);
+      oscSnap.start(now);
+      oscSnap.stop(now + 0.012);
+
+      // 3. Tactile body thump (low-mid resonance of button press, ~20ms)
+      const oscBody = this.ctx.createOscillator();
+      const bodyGain = this.ctx.createGain();
+      oscBody.type = 'sine';
+      oscBody.frequency.setValueAtTime(260, now);
+      oscBody.frequency.exponentialRampToValueAtTime(110, now + 0.018);
+
+      bodyGain.gain.setValueAtTime(0.055, now);
+      bodyGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.022);
+
+      oscBody.connect(bodyGain);
+      bodyGain.connect(this.ctx.destination);
+      oscBody.start(now);
+      oscBody.stop(now + 0.025);
+    } catch (e) {
+      console.warn('Audio click error:', e);
+    }
+  }
+
+  // Alias for backward compatibility
+  playHeartPop() {
+    this.playClick();
   }
 }
 

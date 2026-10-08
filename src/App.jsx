@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
 import WishSection from './components/WishSection';
@@ -15,9 +15,22 @@ export default function App() {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [isLetterOpen, setIsLetterOpen] = useState(false);
 
+  // Global natural mouse click sound for all buttons/links
+  useEffect(() => {
+    const handleGlobalClick = (e) => {
+      const clickable = e.target.closest('button, a, [role="button"], input[type="button"], input[type="submit"]');
+      if (clickable) {
+        romanticAudio.playClick();
+      }
+    };
+
+    window.addEventListener('click', handleGlobalClick);
+    return () => window.removeEventListener('click', handleGlobalClick);
+  }, []);
+
   const handleNavigate = (pageId) => {
     setCurrentPage(pageId);
-    romanticAudio.playHeartPop();
+    romanticAudio.playClick();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 

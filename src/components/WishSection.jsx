@@ -26,29 +26,23 @@ export default function WishSection({ onNavigate }) {
   const gifts = [
     {
       id: 1,
-      title: 'Gift 01: The Eternal Promise',
-      tag: 'Sacred Vow',
+      title: 'The Eternal Promise',
       subtitle: 'From Anfu to Fidhuttyyyy',
       secret: '“I promise to choose you even when things are hard. I promise to hold your hand through every chapter of our lives, to listen to you, protect you, and cherish you forever.”',
-      icon: '💍',
       color: '#e2a57f',
     },
     {
       id: 2,
-      title: 'Gift 02: Fidhuttyyyy’s Love Coupons',
-      tag: 'Special Vouchers',
+      title: 'Fidhuttyyyy’s Love Coupons',
       subtitle: 'Forever Redeemable',
       secret: '✨ Valid for: 1x Midnight drive with your favorite playlist, 1x Unlimited forehead kisses, 1x Any food you crave whenever you want, and 1x Lifetime of my undivided love.',
-      icon: '🎟️',
       color: '#f4c2c2',
     },
     {
       id: 3,
-      title: 'Gift 03: The Open Wish Box',
-      tag: 'Birthday Grant',
+      title: 'The Open Wish Box',
       subtitle: 'Your Royal Wish',
       secret: '“Your wish is my command. Whatever your heart desires on this birthday, name it and I will make it happen for you, my queen Fidhuttyyyy.”',
-      icon: '🎁',
       color: '#ffd700',
     },
   ];
@@ -366,7 +360,7 @@ export default function WishSection({ onNavigate }) {
                 className="px-4 py-2 rounded-full bg-[#e2a57f]/20 hover:bg-[#e2a57f]/30 border border-[#e2a57f]/40 text-[#f3cbb5] text-xs font-medium tracking-wider uppercase transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-1.5"
               >
                 <Sparkles size={13} className="text-[#ffd700]" />
-                <span>Open All 3 Gifts 🎁</span>
+                <span>Open All Surprises 🎁</span>
               </button>
               <button
                 type="button"
@@ -386,41 +380,24 @@ export default function WishSection({ onNavigate }) {
               return (
                 <div
                   key={gift.id}
-                  className={`rounded-2xl border transition-all duration-300 flex flex-col justify-between overflow-hidden shadow-xl ${
+                  className={`rounded-2xl border transition-all duration-300 flex flex-col justify-between overflow-hidden shadow-xl p-6 ${
                     isOpen
                       ? 'bg-[#1e1714] border-[#e2a57f] shadow-[0_15px_40px_rgba(226,165,127,0.25)]'
                       : 'bg-[#151110] border-[#e2a57f]/30 hover:border-[#e2a57f]/70 hover:-translate-y-1'
                   }`}
                 >
-                  {/* Top Bar */}
-                  <div className="p-5 pb-3 border-b border-white/10 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-2xl">{gift.icon}</span>
-                      <span className="font-mono text-xs font-bold tracking-widest text-[#e2a57f] uppercase">
-                        BOX 0{gift.id}
-                      </span>
-                    </div>
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] uppercase font-semibold tracking-wider bg-white/5 border border-white/10 text-[#d5ccc1]">
-                      {gift.tag}
-                    </span>
-                  </div>
-
-                  {/* Body Content */}
-                  <div className="p-5 flex-1 flex flex-col justify-between">
+                  <div className="flex-1 flex flex-col justify-between">
                     <div>
-                      <h4 className="font-serif text-xl sm:text-2xl text-[#fbf7ee] font-medium mb-1">
+                      <h4 className="font-serif text-2xl text-[#fbf7ee] font-medium mb-1">
                         {gift.title}
                       </h4>
-                      <p className="text-xs text-[#a99e91] mb-4 font-light">
+                      <p className="text-xs text-[#a99e91] mb-5 font-light">
                         {gift.subtitle}
                       </p>
 
                       {/* Unwrapped Message */}
                       {isOpen ? (
                         <div className="p-4 rounded-xl bg-[#120d0b] border border-[#e2a57f]/40 text-[#f3cbb5] animate-scaleUp shadow-inner relative select-text">
-                          <div className="text-[10px] font-mono text-[#e2a57f] tracking-widest uppercase mb-1.5 flex items-center gap-1">
-                            <Sparkles size={11} /> Unwrapped Gift:
-                          </div>
                           <p className="font-handwriting text-2xl leading-relaxed text-[#fdf0e6]">
                             {gift.secret}
                           </p>
@@ -434,10 +411,10 @@ export default function WishSection({ onNavigate }) {
                             🎁
                           </div>
                           <span className="text-xs font-medium text-[#e2a57f] tracking-wider uppercase">
-                            Click to Unwrap Box
+                            Click to Unwrap
                           </span>
                           <p className="text-[11px] text-[#8e8276] mt-1 font-light">
-                            Contains a special surprise from Anfu
+                            Tap to reveal Anfu's message
                           </p>
                         </div>
                       )}
@@ -447,7 +424,7 @@ export default function WishSection({ onNavigate }) {
                     <button
                       type="button"
                       onClick={() => toggleBox(gift.id)}
-                      className={`w-full mt-4 py-2.5 px-4 rounded-xl text-xs font-semibold tracking-wider uppercase transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                      className={`w-full mt-5 py-2.5 px-4 rounded-xl text-xs font-semibold tracking-wider uppercase transition-all flex items-center justify-center gap-2 cursor-pointer ${
                         isOpen
                           ? 'bg-white/10 hover:bg-white/15 text-[#fbf7ee] border border-white/15'
                           : 'bg-gradient-to-r from-[#e2a57f] to-[#f3cbb5] text-[#14100d] hover:brightness-110 shadow-md'
@@ -456,12 +433,12 @@ export default function WishSection({ onNavigate }) {
                       {isOpen ? (
                         <>
                           <RefreshCw size={12} />
-                          <span>Close Box 0{gift.id}</span>
+                          <span>Close</span>
                         </>
                       ) : (
                         <>
                           <Gift size={13} />
-                          <span>Unwrap Box 0{gift.id} ♡</span>
+                          <span>Unwrap Surprise ♡</span>
                         </>
                       )}
                     </button>

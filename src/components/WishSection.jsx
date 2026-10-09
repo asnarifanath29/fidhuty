@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import confetti from 'canvas-confetti';
-import { Play, Pause, Flame, Sparkles, Video, Upload, Heart, RefreshCw, Volume2, VolumeX, Gift, Wind } from 'lucide-react';
+import { Play, Pause, Flame, Sparkles, Video, Upload, Heart, RefreshCw, Volume2, VolumeX, Gift, Wind, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { romanticAudio } from '../utils/romanticAudio';
 import ChapterPagination from './ChapterPagination';
 
@@ -10,18 +10,15 @@ export default function WishSection({ onNavigate }) {
   const [candleSmoke, setCandleSmoke] = useState(false);
 
   const [wishRevealed, setWishRevealed] = useState(false);
-  const [videoFile, setVideoFile] = useState(null);
+  const [videoFile, setVideoFile] = useState('/assets/birthday_video.mp4');
   const [isPlayingVideo, setIsPlayingVideo] = useState(false);
   const [isVideoMuted, setIsVideoMuted] = useState(true);
   const videoRef = useRef(null);
   const fileInputRef = useRef(null);
 
-  // 3 Interactive Birthday Gift Boxes state
-  const [openedGifts, setOpenedGifts] = useState({
-    1: false,
-    2: false,
-    3: false,
-  });
+  // Real Photo Gift Box Modal State
+  const [isGiftModalOpen, setIsGiftModalOpen] = useState(false);
+  const [selectedGiftId, setSelectedGiftId] = useState(1);
 
   const gifts = [
     {
@@ -107,21 +104,22 @@ export default function WishSection({ onNavigate }) {
     setWishRevealed(false);
   };
 
-  // Toggle Gift Box
-  const toggleGiftBox = (id) => {
+  // Open / Close Gift Modal
+  const handleOpenGiftModal = (id = 1) => {
     romanticAudio.playSurpriseMusic();
-    setOpenedGifts((prev) => {
-      const next = { ...prev, [id]: !prev[id] };
-      if (next[id]) {
-        confetti({
-          particleCount: 45,
-          spread: 75,
-          origin: { y: 0.65 },
-          colors: ['#e2a57f', '#ffd700', '#f4d3cd', '#ffffff'],
-        });
-      }
-      return next;
+    setSelectedGiftId(id);
+    setIsGiftModalOpen(true);
+    confetti({
+      particleCount: 55,
+      spread: 80,
+      origin: { y: 0.6 },
+      colors: ['#e2a57f', '#ffd700', '#f4d3cd', '#ffffff'],
     });
+  };
+
+  const handleCloseGiftModal = () => {
+    romanticAudio.playClick();
+    setIsGiftModalOpen(false);
   };
 
   const handleVideoUpload = (e) => {
@@ -139,8 +137,12 @@ export default function WishSection({ onNavigate }) {
       videoRef.current.pause();
       setIsPlayingVideo(false);
     } else {
-      videoRef.current.play();
-      setIsPlayingVideo(true);
+      romanticAudio.playClick();
+      videoRef.current.play().then(() => {
+        setIsPlayingVideo(true);
+      }).catch((err) => {
+        console.log('Video play error:', err);
+      });
     }
   };
 
@@ -325,113 +327,59 @@ export default function WishSection({ onNavigate }) {
           </div>
         </div>
 
-        {/* 2. Unbox With Fidhuttyyyy: Birthday Surprise Boxes (Moved & Enhanced here!) */}
+        {/* 2. Unbox With Fidhuttyyyy: Real Luxury Gift Box Showcase */}
         <div className="glass-panel rounded-3xl p-6 sm:p-10 mb-16 border border-[#e2a57f]/25 relative bg-gradient-to-b from-[#181413] to-[#120f0e]">
-          <div className="text-center mb-10">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#e2a57f]/15 border border-[#e2a57f]/30 text-[#e2a57f] text-[11px] tracking-widest uppercase font-semibold mb-2">
-              <Gift size={13} /> Unbox With Fidhuttyyyy
+          <div className="text-center mb-8">
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#e2a57f]/15 border border-[#e2a57f]/30 text-[#e2a57f] text-[11px] tracking-widest uppercase font-semibold mb-2">
+              <Gift size={13} /> Special Birthday Surprise
             </span>
             <h3 className="font-serif text-3xl sm:text-4xl text-[#fbf7ee] font-light">
-              Birthday Surprise Boxes
+              Birthday Surprise Box
             </h3>
             <p className="text-xs sm:text-sm text-[#d5ccc1] max-w-md mx-auto mt-1 font-light">
-              Untie the silk ribbons and click each gift box to reveal your special birthday surprises.
+              Untie the silk ribbons to unwrap your 3 secret birthday surprises.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-            {gifts.map((gift) => {
-              const isOpened = openedGifts[gift.id];
-              return (
-                <div
-                  key={gift.id}
-                  onClick={() => toggleGiftBox(gift.id)}
-                  className={`group relative cursor-pointer rounded-2xl p-6 transition-all duration-500 border select-none ${
-                    isOpened
-                      ? 'bg-[#221b18] border-[#e2a57f] shadow-[0_15px_40px_rgba(226,165,127,0.3)] transform -translate-y-1'
-                      : 'bg-[#181412] border-white/10 hover:border-[#e2a57f]/50 hover:bg-[#1f1916] gift-box-closed shadow-lg'
-                  }`}
-                >
-                  {/* Closed State: 3D Luxury Gift Box with Bow and Ribbon */}
-                  {!isOpened ? (
-                    <div className="flex flex-col items-center text-center py-4">
-                      {/* 3D Box Illustration Container */}
-                      <div className="relative w-28 h-28 mb-4 flex items-center justify-center">
-                        {/* Box Body */}
-                        <div className="w-24 h-20 bg-gradient-to-br from-[#f8f5ef] to-[#e8ded0] rounded-md shadow-xl border border-[#d8caa8] relative overflow-hidden flex items-center justify-center">
-                          {/* Vertical Ribbon */}
-                          <div className="absolute inset-y-0 w-4 bg-gradient-to-r from-[#d4af37] via-[#ffd700] to-[#b8860b] shadow-xs"></div>
-                          {/* Horizontal Ribbon */}
-                          <div className="absolute inset-x-0 h-4 bg-gradient-to-b from-[#d4af37] via-[#ffd700] to-[#b8860b] shadow-xs"></div>
-                          
-                          {/* Wax Seal / Tag */}
-                          <div className="relative z-10 w-9 h-9 rounded-full bg-[#8d2b38] border-2 border-[#ffd700] flex items-center justify-center text-white shadow-md">
-                            <span className="text-xs font-serif font-bold">0{gift.id}</span>
-                          </div>
-                        </div>
+          {/* Real Photo Luxury Gift Card */}
+          <div
+            onClick={() => handleOpenGiftModal(1)}
+            className="group relative max-w-3xl mx-auto rounded-3xl overflow-hidden border border-[#e2a57f]/30 shadow-[0_25px_60px_rgba(0,0,0,0.85)] cursor-pointer transition-all duration-500 hover:border-[#e2a57f] hover:shadow-[0_25px_70px_rgba(226,165,127,0.35)] hover:-translate-y-1 select-none"
+          >
+            {/* Real Photograph with Candlelight & Ribbons */}
+            <div className="relative aspect-[16/10] sm:aspect-[16/9] w-full overflow-hidden bg-[#161210]">
+              <img
+                src="/assets/romantic_gift.jpg"
+                alt="Romantic Birthday Gift Box"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              {/* Cinematic Vignette */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/40"></div>
 
-                        {/* Box Lid */}
-                        <div className="absolute top-2 w-26 h-6 bg-gradient-to-r from-[#ffffff] via-[#f7f2e7] to-[#ebe1cf] rounded-sm shadow-md border border-[#d8caa8] flex items-center justify-center">
-                          {/* Silk Ribbon Bow on top */}
-                          <div className="absolute -top-3 flex items-center justify-center">
-                            <div className="w-4 h-4 rounded-full border-2 border-[#ffd700] bg-[#e6b800]/80 -rotate-45 shadow-xs"></div>
-                            <div className="w-2.5 h-2.5 rounded-full bg-[#ffd700] z-10 shadow-xs"></div>
-                            <div className="w-4 h-4 rounded-full border-2 border-[#ffd700] bg-[#e6b800]/80 rotate-45 shadow-xs"></div>
-                          </div>
-                        </div>
-                      </div>
+              {/* Shimmer on Hover */}
+              <div className="absolute inset-0 bg-radial from-[#e2a57f]/15 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
-                      {/* Title & Tag */}
-                      <span className="text-[10px] tracking-widest uppercase font-mono text-[#e2a57f] mb-1">
-                        {gift.tag}
-                      </span>
-                      <h4 className="font-serif text-xl text-[#fbf7ee] font-medium mb-1">
-                        {gift.title}
-                      </h4>
-                      <p className="text-xs text-[#a99e91] font-light">
-                        {gift.subtitle}
-                      </p>
+              {/* Floating Badge (Top Left) */}
+              <div className="absolute top-4 left-4 z-10 bg-black/75 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-[#e2a57f]/40 text-[11px] text-[#f3cbb5] font-mono tracking-wider flex items-center gap-1.5 shadow-md">
+                <Sparkles size={12} className="text-[#e2a57f]" />
+                <span>3 SECRET SURPRISES INSIDE</span>
+              </div>
 
-                      <div className="mt-4 pt-3 border-t border-white/5 w-full text-xs text-[#e2a57f] flex items-center justify-center gap-1 group-hover:scale-105 transition-transform">
-                        <span>Click to Open Ribbon 🎀</span>
-                      </div>
-                    </div>
-                  ) : (
-                    /* Opened State: Unboxed Letter Reveal */
-                    <div className="animate-fadeIn relative py-2">
-                      {/* Golden radiance background effect */}
-                      <div className="gold-rays absolute -top-8 left-1/2 -translate-x-1/2 w-32 h-32 bg-amber-400/15 rounded-full blur-xl pointer-events-none"></div>
-
-                      <div className="flex items-center justify-between mb-3 border-b border-[#e2a57f]/25 pb-2">
-                        <span className="text-3xl">{gift.icon}</span>
-                        <span className="text-[11px] px-2.5 py-0.5 rounded-full uppercase tracking-wider font-medium bg-[#e2a57f]/20 text-[#e2a57f]">
-                          Unwrapped ✨
-                        </span>
-                      </div>
-
-                      <h4 className="font-serif text-xl sm:text-2xl text-[#fbf7ee] mb-2 font-medium">
-                        {gift.title}
-                      </h4>
-
-                      <div className="mt-3 p-4 rounded-xl bg-[#171311] border border-[#e2a57f]/30">
-                        <p className="font-handwriting text-2xl text-[#f3cbb5] leading-relaxed">
-                          {gift.secret}
-                        </p>
-                      </div>
-
-                      <div className="mt-4 flex items-center justify-between text-xs text-[#a99e91]">
-                        <span className="text-[10px] text-[#e2a57f] tracking-widest font-mono">
-                          ALL MY LOVE FOR FIDHUTTYYYY ♡
-                        </span>
-                        <span className="text-[#a99e91] hover:text-white text-[11px]">
-                          Tap to repack 📦
-                        </span>
-                      </div>
-                    </div>
-                  )}
+              {/* Center Open Button Overlay */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10">
+                <div className="transform group-hover:scale-110 active:scale-95 transition-all duration-300">
+                  <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-[#e2a57f] to-[#f3cbb5] text-[#14100d] flex items-center justify-center shadow-[0_0_35px_rgba(226,165,127,0.7)] mx-auto mb-3">
+                    <Gift size={34} className="text-[#14100d]" />
+                  </div>
+                  <span className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-black/85 backdrop-blur-md text-[#fbf7ee] text-xs sm:text-sm font-medium tracking-wider uppercase border border-[#e2a57f]/60 shadow-xl group-hover:bg-[#1f1714] group-hover:border-[#e2a57f]">
+                    <span>Untie Ribbon & Open ♡</span>
+                  </span>
                 </div>
-              );
-            })}
+                <p className="mt-3 text-xs sm:text-sm font-serif italic text-[#f3cbb5] drop-shadow-md tracking-wide">
+                  Click to reveal your personal love promises and coupons
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -445,39 +393,37 @@ export default function WishSection({ onNavigate }) {
               Fidhuttyyyy's Birthday Cinema
             </h3>
             <p className="text-xs sm:text-sm text-[#d5ccc1] max-w-lg mx-auto mt-2">
-              (Ready for your AI video! Upload or replace your video file below anytime.)
+              A special celebration video crafted with love for Fidhuttyyyy.
             </p>
           </div>
 
           {/* Cinema Frame */}
-          <div className="relative aspect-video max-w-3xl mx-auto rounded-2xl overflow-hidden bg-black/90 border border-[#e2a57f]/30 shadow-[0_20px_50px_rgba(0,0,0,0.8)] flex items-center justify-center group">
+          <div className="relative aspect-video max-w-3xl mx-auto rounded-2xl overflow-hidden bg-black border border-[#e2a57f]/30 shadow-[0_20px_50px_rgba(0,0,0,0.8)] flex items-center justify-center group">
             {videoFile ? (
               <>
                 <video
                   ref={videoRef}
                   src={videoFile}
-                  className="w-full h-full object-cover"
-                  loop
-                  muted={isVideoMuted}
+                  controls
                   playsInline
+                  onPlay={() => setIsPlayingVideo(true)}
+                  onPause={() => setIsPlayingVideo(false)}
+                  onEnded={() => setIsPlayingVideo(false)}
+                  className="w-full h-full object-contain bg-black"
                 />
-                <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
-                  <button
+                {!isPlayingVideo && (
+                  <div
                     onClick={toggleVideoPlay}
-                    className="p-4 rounded-full bg-[#e2a57f] text-black hover:scale-110 transition-transform shadow-lg cursor-pointer"
+                    className="absolute inset-0 bg-black/45 backdrop-blur-[2px] flex flex-col items-center justify-center cursor-pointer transition-all hover:bg-black/30 group/btn"
                   >
-                    {isPlayingVideo ? <Pause size={24} /> : <Play size={24} className="ml-1" />}
-                  </button>
-                  <button
-                    onClick={() => {
-                      setIsVideoMuted(!isVideoMuted);
-                      if (videoRef.current) videoRef.current.muted = !isVideoMuted;
-                    }}
-                    className="p-3 rounded-full bg-black/60 text-white hover:bg-black/80 transition-colors cursor-pointer"
-                  >
-                    {isVideoMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
-                  </button>
-                </div>
+                    <div className="w-20 h-20 rounded-full bg-[#e2a57f] hover:bg-[#f3cbb5] text-[#14100d] flex items-center justify-center shadow-[0_0_30px_rgba(226,165,127,0.6)] group-hover/btn:scale-110 active:scale-95 transition-all">
+                      <Play size={32} className="ml-1 fill-current" />
+                    </div>
+                    <p className="mt-4 text-sm font-serif italic text-[#fbf7ee] tracking-wider drop-shadow-md">
+                      Play Celebration Video ♡
+                    </p>
+                  </div>
+                )}
               </>
             ) : (
               <div className="relative w-full h-full flex flex-col items-center justify-center p-6 text-center bg-radial from-[#241c17] to-[#0c0a09]">
@@ -503,30 +449,152 @@ export default function WishSection({ onNavigate }) {
               </div>
             )}
           </div>
-
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="video/*"
-            onChange={handleVideoUpload}
-            className="hidden"
-          />
-
-          <div className="mt-6 flex flex-wrap items-center justify-between text-xs text-[#a99e91] max-w-3xl mx-auto px-2">
-            <span>✨ Supports MP4, WebM, 1080p AI Video</span>
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className="text-[#e2a57f] hover:underline flex items-center gap-1 font-medium cursor-pointer"
-            >
-              <Upload size={12} /> {videoFile ? 'Replace with new video' : 'Upload video here'}
-            </button>
-          </div>
         </div>
 
         {/* Page-wise Navigation */}
         <ChapterPagination currentPage="wish" onNavigate={onNavigate} />
 
       </div>
+
+      {/* Real Photo Gift Box Modal: Full Romantic Keepsake Letter Modal */}
+      {isGiftModalOpen && (
+        <div
+          onClick={handleCloseGiftModal}
+          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-fadeIn"
+        >
+          <div
+            className="relative w-full max-w-2xl bg-[#191412] border border-[#e2a57f]/50 rounded-3xl p-6 sm:p-8 shadow-[0_25px_70px_rgba(0,0,0,0.9)] overflow-hidden animate-scaleUp"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Ambient Golden Background Glow */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[#e2a57f]/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+            {/* Close Button */}
+            <button
+              onClick={handleCloseGiftModal}
+              className="absolute top-5 right-5 w-9 h-9 rounded-full bg-white/10 hover:bg-[#e2a57f] hover:text-[#14100d] text-[#fbf7ee] flex items-center justify-center transition-all cursor-pointer border border-white/10 z-10"
+              aria-label="Close Surprise Modal"
+            >
+              <X size={18} />
+            </button>
+
+            {/* Modal Top Header */}
+            <div className="text-center mb-6 pr-6">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#e2a57f]/15 border border-[#e2a57f]/30 text-[#e2a57f] text-[10px] tracking-widest uppercase font-semibold mb-2">
+                <Gift size={12} /> Unboxed With Love
+              </span>
+              <h3 className="font-serif text-2xl sm:text-3xl text-[#fbf7ee] font-light">
+                Surprises For Fidhuttyyyy
+              </h3>
+            </div>
+
+            {/* 3 Gift Tabs */}
+            <div className="flex items-center justify-center gap-2 mb-6 border-b border-white/10 pb-4">
+              {gifts.map((g) => {
+                const isActive = selectedGiftId === g.id;
+                return (
+                  <button
+                    key={g.id}
+                    onClick={() => {
+                      romanticAudio.playHeartPop();
+                      setSelectedGiftId(g.id);
+                    }}
+                    className={`flex-1 py-2 px-2 sm:px-4 rounded-xl text-xs font-medium tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer border ${
+                      isActive
+                        ? 'bg-[#e2a57f] text-[#14100d] font-semibold border-[#e2a57f] shadow-md'
+                        : 'bg-[#14100e] text-[#d5ccc1] border-white/10 hover:border-[#e2a57f]/40 hover:text-white'
+                    }`}
+                  >
+                    <span>{g.icon}</span>
+                    <span className="hidden sm:inline">Gift 0{g.id}</span>
+                    <span className="text-[11px] opacity-90 truncate">{g.tag}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Active Gift Keepsake Parchment Display */}
+            {(() => {
+              const currentGift = gifts.find((g) => g.id === selectedGiftId) || gifts[0];
+              return (
+                <div className="animate-fadeIn">
+                  <div className="p-6 sm:p-7 rounded-2xl bg-[#140e0b] border border-[#e2a57f]/40 shadow-inner relative overflow-hidden">
+                    {/* Top Ribbon Stripe */}
+                    <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-[#b37d46] via-[#ffd89b] to-[#b37d46]"></div>
+
+                    <div className="flex items-center justify-between mb-3 pt-1 border-b border-[#e2a57f]/20 pb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-3xl">{currentGift.icon}</span>
+                        <div>
+                          <span className="text-[10px] font-mono tracking-widest text-[#e2a57f] uppercase font-bold block">
+                            GIFT 0{currentGift.id} • {currentGift.tag}
+                          </span>
+                          <h4 className="font-serif text-xl sm:text-2xl text-[#fbf7ee] font-medium leading-tight">
+                            {currentGift.title}
+                          </h4>
+                        </div>
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-[#a99e91] font-light mb-4">
+                      {currentGift.subtitle}
+                    </p>
+
+                    {/* Handwritten Heartfelt Message */}
+                    <div className="p-4 sm:p-5 rounded-xl bg-[#1c1613] border border-[#e2a57f]/25">
+                      <p className="font-handwriting text-2xl sm:text-3xl text-[#f3cbb5] leading-relaxed">
+                        {currentGift.secret}
+                      </p>
+                    </div>
+
+                    {/* Signature */}
+                    <div className="mt-4 flex items-center justify-between text-xs text-[#e2a57f] pt-1">
+                      <span className="font-mono text-[10px] tracking-widest uppercase">
+                        SEALED WITH LOVE ♡
+                      </span>
+                      <span className="font-serif italic text-sm text-[#fbf7ee]">
+                        — Forever Yours, Anfu
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Modal Bottom Navigation */}
+                  <div className="mt-6 flex items-center justify-between gap-3 text-xs">
+                    <button
+                      onClick={() => {
+                        romanticAudio.playClick();
+                        setSelectedGiftId((prev) => (prev > 1 ? prev - 1 : 3));
+                      }}
+                      className="inline-flex items-center gap-1 px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 text-[#d5ccc1] hover:text-white border border-white/10 cursor-pointer transition-colors"
+                    >
+                      <ChevronLeft size={14} />
+                      <span>Previous</span>
+                    </button>
+
+                    <button
+                      onClick={handleCloseGiftModal}
+                      className="text-[#a99e91] hover:text-[#fbf7ee] text-xs underline underline-offset-4 cursor-pointer py-1"
+                    >
+                      Fold & Close Box
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        romanticAudio.playClick();
+                        setSelectedGiftId((prev) => (prev < 3 ? prev + 1 : 1));
+                      }}
+                      className="inline-flex items-center gap-1 px-4 py-2 rounded-full bg-[#e2a57f] hover:bg-[#f3cbb5] text-[#14100d] font-semibold cursor-pointer transition-colors shadow-md"
+                    >
+                      <span>Next Surprise</span>
+                      <ChevronRight size={14} />
+                    </button>
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        </div>
+      )}
     </section>
   );
 }

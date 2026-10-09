@@ -7,7 +7,7 @@ import ChapterPagination from './ChapterPagination';
 export default function VoiceAndVideoSection({ onNavigate }) {
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [audioUrl, setAudioUrl] = useState(null);
-  const [personalVideoUrl, setPersonalVideoUrl] = useState(null);
+  const [personalVideoUrl, setPersonalVideoUrl] = useState('/assets/anfal video.mp4');
   const [isLockedForever, setIsLockedForever] = useState(false);
   const [audioProgress, setAudioProgress] = useState(0);
 
@@ -217,44 +217,39 @@ export default function VoiceAndVideoSection({ onNavigate }) {
         {/* 2. Personal Video Section */}
         <div className="glass-panel rounded-3xl p-6 sm:p-10 mb-16 border border-[#e2a57f]/20">
           <div className="text-center mb-8">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#e2a57f]/15 border border-[#e2a57f]/30 text-[#e2a57f] text-[11px] tracking-widest uppercase font-semibold mb-2">
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#e2a57f]/15 border border-[#e2a57f]/30 text-[#e2a57f] text-[11px] tracking-widest uppercase font-semibold mb-2">
               <Video size={13} /> Dedicated Video
             </span>
             <h3 className="font-serif text-3xl sm:text-4xl text-[#fbf7ee] font-light">
               A Personal Video For Fidhuttyyyy
             </h3>
-            <p className="text-xs sm:text-sm text-[#d5ccc1] max-w-md mx-auto mt-1">
-              Add your video about her or personal message right here.
-            </p>
           </div>
 
-          <div className="relative aspect-video max-w-2xl mx-auto rounded-2xl overflow-hidden bg-black/80 border border-[#e2a57f]/30 shadow-2xl flex items-center justify-center">
-            {personalVideoUrl ? (
-              <video
-                src={personalVideoUrl}
-                controls
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="flex flex-col items-center justify-center p-6 text-center">
-                <div className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-3 text-[#e2a57f]">
-                  <Video size={24} />
+          {/* Portrait / Vertical Video Player Frame (sized specifically for 9:16 Anfal Video) */}
+          <div className="relative max-w-[320px] sm:max-w-[360px] mx-auto">
+            <div className="relative rounded-[2.5rem] p-3 sm:p-3.5 bg-gradient-to-b from-[#2e241f] via-[#1a1411] to-[#0e0c0b] border-2 border-[#e2a57f]/40 shadow-[0_25px_60px_rgba(0,0,0,0.9),0_0_35px_rgba(226,165,127,0.2)]">
+              {/* Dynamic Top Speaker / Camera Notch */}
+              <div className="flex items-center justify-center gap-2 mb-2.5">
+                <div className="w-16 h-3 bg-black/80 rounded-full border border-white/10 flex items-center justify-center">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#e2a57f]/60"></span>
                 </div>
-                <h4 className="font-serif text-xl text-[#fbf7ee] mb-1">
-                  Video About Her
-                </h4>
-                <p className="text-xs text-[#a99e91] max-w-xs mb-4">
-                  Upload your video file anytime to surprise Fidhuttyyyy with your personal video dedication.
-                </p>
-                <button
-                  onClick={() => videoInputRef.current?.click()}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#e2a57f] text-[#14100d] font-medium text-xs tracking-wider uppercase hover:bg-[#f3cbb5] transition-all"
-                >
-                  <Upload size={14} />
-                  <span>Choose Video File</span>
-                </button>
               </div>
-            )}
+
+              {/* Vertical Video Display */}
+              <div className="relative aspect-[9/16] w-full rounded-[2rem] overflow-hidden bg-black shadow-inner">
+                <video
+                  src={personalVideoUrl}
+                  controls
+                  playsInline
+                  loop
+                  preload="metadata"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
+              {/* Bottom Phone Chin Home Bar */}
+              <div className="w-24 h-1 bg-white/20 rounded-full mx-auto mt-3"></div>
+            </div>
           </div>
 
           <input

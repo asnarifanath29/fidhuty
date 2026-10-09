@@ -5,14 +5,9 @@ import { romanticAudio } from '../utils/romanticAudio';
 import ChapterPagination from './ChapterPagination';
 
 export default function WishSection({ onNavigate }) {
-  // Candles state: 5 candles on the cake
-  const [candles, setCandles] = useState([
-    { id: 1, isLit: true, smoke: false, left: '26%', delay: '0s' },
-    { id: 2, isLit: true, smoke: false, left: '38%', delay: '0.2s' },
-    { id: 3, isLit: true, smoke: false, left: '50%', delay: '0.4s' },
-    { id: 4, isLit: true, smoke: false, left: '62%', delay: '0.1s' },
-    { id: 5, isLit: true, smoke: false, left: '74%', delay: '0.3s' },
-  ]);
+  // Single real birthday candle on the cake
+  const [candleLit, setCandleLit] = useState(true);
+  const [candleSmoke, setCandleSmoke] = useState(false);
 
   const [wishRevealed, setWishRevealed] = useState(false);
   const [videoFile, setVideoFile] = useState(null);
@@ -85,58 +80,30 @@ export default function WishSection({ onNavigate }) {
     })();
   };
 
-  // Blow out an individual candle
-  const blowCandle = (id) => {
+  // Blow out candle
+  const handleBlowCandle = () => {
+    if (!candleLit) return;
     romanticAudio.playCandleBlow();
-    setCandles((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, isLit: false, smoke: true } : c))
-    );
+    setCandleLit(false);
+    setCandleSmoke(true);
 
     setTimeout(() => {
-      setCandles((prev) =>
-        prev.map((c) => (c.id === id ? { ...c, smoke: false } : c))
-      );
-    }, 1800);
-
-    // Check if all candles are now out
-    setTimeout(() => {
-      setCandles((current) => {
-        const remainingLit = current.filter((c) => c.isLit);
-        if (remainingLit.length === 0) {
-          setWishRevealed(true);
-          triggerBirthdayConfetti();
-          romanticAudio.playBirthdaySong();
-        }
-        return current;
-      });
-    }, 200);
-  };
-
-  // Blow out all candles at once
-  const handleBlowAllCandles = () => {
-    romanticAudio.playCandleBlow();
-    setCandles((prev) =>
-      prev.map((c) => ({ ...c, isLit: false, smoke: true }))
-    );
+      setCandleSmoke(false);
+    }, 2400);
 
     setTimeout(() => {
       setWishRevealed(true);
       triggerBirthdayConfetti();
       romanticAudio.playBirthdaySong();
-    }, 500);
-
-    setTimeout(() => {
-      setCandles((prev) => prev.map((c) => ({ ...c, smoke: false })));
-    }, 2200);
+    }, 400);
   };
 
-  // Relight all candles
-  const handleRelightCandles = () => {
-    romanticAudio.playHeartPop();
+  // Relight candle
+  const handleRelightCandle = () => {
+    romanticAudio.playClick();
     romanticAudio.stopBirthdaySong();
-    setCandles((prev) =>
-      prev.map((c) => ({ ...c, isLit: true, smoke: false }))
-    );
+    setCandleLit(true);
+    setCandleSmoke(false);
     setWishRevealed(false);
   };
 
@@ -177,8 +144,6 @@ export default function WishSection({ onNavigate }) {
     }
   };
 
-  const anyCandlesLit = candles.some((c) => c.isLit);
-
   return (
     <section id="wish" className="relative min-h-screen py-24 px-4 sm:px-6 bg-[#0e0d0c] text-white">
       {/* Background ambient lighting */}
@@ -208,88 +173,74 @@ export default function WishSection({ onNavigate }) {
         <div className="glass-panel rounded-3xl p-6 sm:p-10 mb-16 border border-[#e2a57f]/20 relative overflow-hidden">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             
-            {/* Cake Photo with Interactive Candle Setup */}
-            <div className="relative group rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-[#14100e]">
+            {/* Real Cake Photo with Interactive Candle Flame Setup */}
+            <div
+              onClick={candleLit ? handleBlowCandle : undefined}
+              className={`relative group rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-[#14100e] cursor-pointer select-none transition-all duration-700 ${
+                candleLit ? 'hover:shadow-[0_0_35px_rgba(226,165,127,0.3)]' : ''
+              }`}
+            >
               <img
-                src="/assets/birthday_cake.jpg"
+                src="/assets/birthday_cake.jpg?v=2"
                 alt="Birthday Cake for Fidhuttyyyy"
-                className="w-full h-80 sm:h-96 object-cover transition-transform duration-700 group-hover:scale-105"
+                className="w-full aspect-[4/5] object-cover object-center transition-transform duration-700 group-hover:scale-102"
               />
-              {/* Darkening ambient vignette */}
+              {/* Darkening ambient vignette when candle is blown */}
               <div
                 className={`absolute inset-0 transition-opacity duration-700 pointer-events-none ${
-                  anyCandlesLit ? 'bg-gradient-to-t from-black/60 via-transparent to-black/20' : 'bg-black/45'
+                  candleLit ? 'bg-gradient-to-t from-black/50 via-transparent to-black/15' : 'bg-black/55'
                 }`}
               ></div>
 
-              {/* Individual Interactive Candles Overlay over the cake */}
-              <div className="absolute top-[28%] left-[22%] right-[22%] h-24 pointer-events-auto flex items-end justify-between px-2">
-                {candles.map((candle) => (
-                  <div
-                    key={candle.id}
-                    onClick={() => candle.isLit && blowCandle(candle.id)}
-                    className="relative flex flex-col items-center cursor-pointer group/candle select-none"
-                    title={candle.isLit ? 'Click to blow out this candle' : 'Candle extinguished'}
-                  >
-                    {/* Glowing Candle Flame */}
-                    {candle.isLit ? (
-                      <div
-                        className="candle-flame relative w-4 h-8 flex items-center justify-center"
-                        style={{ animationDelay: candle.delay }}
-                      >
-                        {/* Outer warm halo */}
-                        <span className="absolute w-7 h-7 rounded-full bg-amber-500/30 blur-xs"></span>
-                        {/* Main SVG Flame */}
-                        <svg className="w-4 h-7 filter drop-shadow-[0_0_8px_rgba(255,180,50,0.9)]" viewBox="0 0 24 36" fill="none">
-                          <path
-                            d="M12 0C12 0 4 12 4 22C4 28 8 34 12 34C16 34 20 28 20 22C20 12 12 0 12 0Z"
-                            fill="url(#flameGrad)"
-                          />
-                          <path
-                            d="M12 12C12 12 8 18 8 24C8 27 10 30 12 30C14 30 16 27 16 24C16 18 12 12 12 12Z"
-                            fill="#ffffff"
-                            opacity="0.85"
-                          />
-                          <defs>
-                            <linearGradient id="flameGrad" x1="12" y1="0" x2="12" y2="34" gradientUnits="userSpaceOnUse">
-                              <stop stopColor="#ffe680" />
-                              <stop offset="0.35" stopColor="#ff9900" />
-                              <stop offset="0.8" stopColor="#ff3b00" />
-                              <stop offset="1" stopColor="#800000" />
-                            </linearGradient>
-                          </defs>
-                        </svg>
-                      </div>
-                    ) : (
-                      /* Smoke Trail Effect when blown out */
-                      candle.smoke ? (
-                        <div className="candle-smoke w-4 h-10 flex items-center justify-center">
-                          <span className="w-1.5 h-6 bg-gradient-to-t from-gray-400 to-transparent rounded-full blur-xs"></span>
-                        </div>
-                      ) : (
-                        <div className="w-4 h-4"></div>
-                      )
-                    )}
+              {/* Interactive Flame & Smoke directly over the real candle flame (X: 44%, Y: 63%) */}
+              <div
+                className="absolute left-[44%] top-[63%] -translate-x-1/2 -translate-y-1/2 pointer-events-none flex items-center justify-center"
+                title={candleLit ? 'Click to blow out the candle' : 'Candle extinguished'}
+              >
+                {candleLit ? (
+                  <div className="relative flex items-center justify-center">
+                    {/* Pulsing Warm Golden Halo */}
+                    <span className="absolute w-12 h-12 rounded-full bg-amber-400/25 blur-xs animate-pulse"></span>
+                    <span className="absolute w-20 h-20 rounded-full bg-amber-500/15 blur-md"></span>
 
-                    {/* Candle Wick */}
-                    <div className="w-[1.5px] h-2 bg-neutral-900 rounded-full mt-[-1px]"></div>
-
-                    {/* Candle Stick */}
-                    <div className="w-2.5 h-12 bg-gradient-to-b from-[#fdfbf7] via-[#f5ecd8] to-[#e8d8be] rounded-xs shadow-md border-x border-[#d8c3a1]/40 flex flex-col justify-between py-1">
-                      <span className="w-full h-[1px] bg-amber-400/20"></span>
-                      <span className="w-full h-[1px] bg-amber-400/20"></span>
+                    {/* Animated Candle Flame SVG */}
+                    <div className="candle-flame relative w-5 h-9 flex items-center justify-center">
+                      <svg className="w-5 h-8 filter drop-shadow-[0_0_10px_rgba(255,190,60,0.95)]" viewBox="0 0 24 36" fill="none">
+                        <path
+                          d="M12 0C12 0 4 12 4 22C4 28 8 34 12 34C16 34 20 28 20 22C20 12 12 0 12 0Z"
+                          fill="url(#realFlameGrad)"
+                        />
+                        <path
+                          d="M12 12C12 12 8 18 8 24C8 27 10 30 12 30C14 30 16 27 16 24C16 18 12 12 12 12Z"
+                          fill="#ffffff"
+                          opacity="0.9"
+                        />
+                        <defs>
+                          <linearGradient id="realFlameGrad" x1="12" y1="0" x2="12" y2="34" gradientUnits="userSpaceOnUse">
+                            <stop stopColor="#fff5a6" />
+                            <stop offset="0.3" stopColor="#ffa726" />
+                            <stop offset="0.75" stopColor="#ff4500" />
+                            <stop offset="1" stopColor="#800000" />
+                          </linearGradient>
+                        </defs>
+                      </svg>
                     </div>
                   </div>
-                ))}
+                ) : candleSmoke ? (
+                  /* Smoke Trail Effect when blown out */
+                  <div className="candle-smoke flex flex-col items-center">
+                    <span className="w-2 h-10 bg-gradient-to-t from-gray-400/70 via-gray-300/40 to-transparent rounded-full blur-xs"></span>
+                  </div>
+                ) : null}
               </div>
 
               {/* Status Pill Badge */}
               <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10 text-xs flex items-center gap-2">
-                {anyCandlesLit ? (
+                {candleLit ? (
                   <>
                     <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
                     <span className="text-amber-300 font-medium flex items-center gap-1">
-                      <Flame size={13} className="text-amber-400" /> Candles are burning bright
+                      <Flame size={13} className="text-amber-400" /> Candle is burning bright
                     </span>
                   </>
                 ) : (
@@ -305,7 +256,7 @@ export default function WishSection({ onNavigate }) {
               {/* In-cake overlay text */}
               <div className="absolute bottom-4 left-4 right-4 text-center">
                 <p className="font-handwriting text-2xl text-[#f3cbb5] drop-shadow-md">
-                  {anyCandlesLit ? "Make a wish & click candles to blow them out..." : "Your wish has been heard, Fidhuttyyyy! ♡"}
+                  {candleLit ? "Make a wish & click candle to blow it out..." : "Your wish has been heard, Fidhuttyyyy! ♡"}
                 </p>
               </div>
             </div>
@@ -320,27 +271,27 @@ export default function WishSection({ onNavigate }) {
                   Make A Wish, Fidhuttyyyy
                 </h3>
                 <p className="text-sm text-[#d5ccc1] leading-relaxed">
-                  Close your eyes, hold your hands together, and think of your deepest wish for this new year of your life. Click the candles or the button below to blow them out!
+                  Close your eyes, hold your hands together, and think of your deepest wish for this new year of your life. Click the candle or the button below to blow it out!
                 </p>
               </div>
 
               {/* Action Buttons */}
               <div className="flex flex-wrap items-center gap-4 pt-1">
-                {anyCandlesLit ? (
+                {candleLit ? (
                   <button
-                    onClick={handleBlowAllCandles}
+                    onClick={handleBlowCandle}
                     className="flex items-center gap-2.5 px-7 py-3.5 rounded-full bg-gradient-to-r from-[#e2a57f] to-[#d97d74] text-white font-medium text-xs sm:text-sm tracking-wider uppercase hover:shadow-[0_0_25px_rgba(226,165,127,0.5)] transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
                   >
                     <Wind size={16} className="animate-pulse" />
-                    <span>Blow Out All Candles 🎂</span>
+                    <span>Blow Out Candle 🎂</span>
                   </button>
                 ) : (
                   <button
-                    onClick={handleRelightCandles}
+                    onClick={handleRelightCandle}
                     className="flex items-center gap-2 px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 text-[#fbf7ee] font-medium text-xs sm:text-sm tracking-wider transition-all border border-white/20 cursor-pointer"
                   >
                     <RefreshCw size={15} />
-                    <span>Relight Candles ✨</span>
+                    <span>Relight Candle ✨</span>
                   </button>
                 )}
 

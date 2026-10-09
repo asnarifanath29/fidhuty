@@ -16,9 +16,12 @@ export default function WishSection({ onNavigate }) {
   const videoRef = useRef(null);
   const fileInputRef = useRef(null);
 
-  // Real Photo Gift Box Modal State
-  const [isGiftModalOpen, setIsGiftModalOpen] = useState(false);
-  const [selectedGiftId, setSelectedGiftId] = useState(1);
+  // 3 Surprise Boxes open/close state
+  const [openedBoxes, setOpenedBoxes] = useState({
+    1: false,
+    2: false,
+    3: false,
+  });
 
   const gifts = [
     {
@@ -104,22 +107,39 @@ export default function WishSection({ onNavigate }) {
     setWishRevealed(false);
   };
 
-  // Open / Close Gift Modal
-  const handleOpenGiftModal = (id = 1) => {
-    romanticAudio.playSurpriseMusic();
-    setSelectedGiftId(id);
-    setIsGiftModalOpen(true);
-    confetti({
-      particleCount: 55,
-      spread: 80,
-      origin: { y: 0.6 },
-      colors: ['#e2a57f', '#ffd700', '#f4d3cd', '#ffffff'],
+  // Toggle Surprise Box
+  const toggleBox = (id) => {
+    setOpenedBoxes((prev) => {
+      const isCurrentlyOpen = prev[id];
+      if (!isCurrentlyOpen) {
+        romanticAudio.playSurpriseMusic();
+        confetti({
+          particleCount: 50,
+          spread: 75,
+          origin: { y: 0.65 },
+          colors: ['#e2a57f', '#ffd700', '#f4d3cd', '#ffffff'],
+        });
+      } else {
+        romanticAudio.playClick();
+      }
+      return { ...prev, [id]: !isCurrentlyOpen };
     });
   };
 
-  const handleCloseGiftModal = () => {
+  const openAllBoxes = () => {
+    romanticAudio.playSurpriseMusic();
+    confetti({
+      particleCount: 75,
+      spread: 90,
+      origin: { y: 0.6 },
+      colors: ['#e2a57f', '#ffd700', '#f4d3cd', '#ffffff'],
+    });
+    setOpenedBoxes({ 1: true, 2: true, 3: true });
+  };
+
+  const closeAllBoxes = () => {
     romanticAudio.playClick();
-    setIsGiftModalOpen(false);
+    setOpenedBoxes({ 1: false, 2: false, 3: false });
   };
 
   const handleVideoUpload = (e) => {
@@ -325,59 +345,130 @@ export default function WishSection({ onNavigate }) {
           </div>
         </div>
 
-        {/* 2. Unbox With Fidhuttyyyy: Real Luxury Gift Box Showcase */}
+        {/* 2. Birthday Surprise Boxes */}
         <div className="glass-panel rounded-3xl p-6 sm:p-10 mb-16 border border-[#e2a57f]/25 relative bg-gradient-to-b from-[#181413] to-[#120f0e]">
           <div className="text-center mb-8">
             <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#e2a57f]/15 border border-[#e2a57f]/30 text-[#e2a57f] text-[11px] tracking-widest uppercase font-semibold mb-2">
-              <Gift size={13} /> Special Birthday Surprise
+              <Gift size={13} /> 3 Special Surprises
             </span>
             <h3 className="font-serif text-3xl sm:text-4xl text-[#fbf7ee] font-light">
-              Birthday Surprise Box
+              Birthday Surprise Boxes
             </h3>
             <p className="text-xs sm:text-sm text-[#d5ccc1] max-w-md mx-auto mt-1 font-light">
-              Untie the silk ribbons to unwrap your 3 secret birthday surprises.
+              Tap any surprise box below to unwrap Anfu's secret gifts for you ♡
             </p>
+
+            {/* Quick Action Buttons */}
+            <div className="flex items-center justify-center gap-3 mt-5">
+              <button
+                type="button"
+                onClick={openAllBoxes}
+                className="px-4 py-2 rounded-full bg-[#e2a57f]/20 hover:bg-[#e2a57f]/30 border border-[#e2a57f]/40 text-[#f3cbb5] text-xs font-medium tracking-wider uppercase transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-1.5"
+              >
+                <Sparkles size={13} className="text-[#ffd700]" />
+                <span>Open All 3 Gifts 🎁</span>
+              </button>
+              <button
+                type="button"
+                onClick={closeAllBoxes}
+                className="px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/15 text-[#d5ccc1] hover:text-white text-xs font-medium tracking-wider uppercase transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-1.5"
+              >
+                <RefreshCw size={12} />
+                <span>Close All</span>
+              </button>
+            </div>
           </div>
 
-          {/* Real Photo Luxury Gift Card */}
-          <div
-            onClick={() => handleOpenGiftModal(1)}
-            className="group relative max-w-3xl mx-auto rounded-3xl overflow-hidden border border-[#e2a57f]/30 shadow-[0_25px_60px_rgba(0,0,0,0.85)] cursor-pointer transition-all duration-500 hover:border-[#e2a57f] hover:shadow-[0_25px_70px_rgba(226,165,127,0.35)] hover:-translate-y-1 select-none"
-          >
-            {/* Real Photograph with Candlelight & Ribbons */}
-            <div className="relative aspect-[16/10] sm:aspect-[16/9] w-full overflow-hidden bg-[#161210]">
-              <img
-                src="/assets/romantic_gift.jpg"
-                alt="Romantic Birthday Gift Box"
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-              {/* Cinematic Vignette */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/40"></div>
-
-              {/* Shimmer on Hover */}
-              <div className="absolute inset-0 bg-radial from-[#e2a57f]/15 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-              {/* Floating Badge (Top Left) */}
-              <div className="absolute top-4 left-4 z-10 bg-black/75 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-[#e2a57f]/40 text-[11px] text-[#f3cbb5] font-mono tracking-wider flex items-center gap-1.5 shadow-md">
-                <Sparkles size={12} className="text-[#e2a57f]" />
-                <span>3 SECRET SURPRISES INSIDE</span>
-              </div>
-
-              {/* Center Open Button Overlay */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-10">
-                <div className="transform group-hover:scale-110 active:scale-95 transition-all duration-300">
-                  <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-[#e2a57f] to-[#f3cbb5] text-[#14100d] flex items-center justify-center shadow-[0_0_35px_rgba(226,165,127,0.7)] mx-auto mb-3">
-                    <Gift size={34} className="text-[#14100d]" />
+          {/* 3 Simple, Beautiful, Fast Surprise Boxes */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {gifts.map((gift) => {
+              const isOpen = openedBoxes[gift.id];
+              return (
+                <div
+                  key={gift.id}
+                  className={`rounded-2xl border transition-all duration-300 flex flex-col justify-between overflow-hidden shadow-xl ${
+                    isOpen
+                      ? 'bg-[#1e1714] border-[#e2a57f] shadow-[0_15px_40px_rgba(226,165,127,0.25)]'
+                      : 'bg-[#151110] border-[#e2a57f]/30 hover:border-[#e2a57f]/70 hover:-translate-y-1'
+                  }`}
+                >
+                  {/* Top Bar */}
+                  <div className="p-5 pb-3 border-b border-white/10 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl">{gift.icon}</span>
+                      <span className="font-mono text-xs font-bold tracking-widest text-[#e2a57f] uppercase">
+                        BOX 0{gift.id}
+                      </span>
+                    </div>
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] uppercase font-semibold tracking-wider bg-white/5 border border-white/10 text-[#d5ccc1]">
+                      {gift.tag}
+                    </span>
                   </div>
-                  <span className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-black/85 backdrop-blur-md text-[#fbf7ee] text-xs sm:text-sm font-medium tracking-wider uppercase border border-[#e2a57f]/60 shadow-xl group-hover:bg-[#1f1714] group-hover:border-[#e2a57f]">
-                    <span>Untie Ribbon & Open ♡</span>
-                  </span>
+
+                  {/* Body Content */}
+                  <div className="p-5 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h4 className="font-serif text-xl sm:text-2xl text-[#fbf7ee] font-medium mb-1">
+                        {gift.title}
+                      </h4>
+                      <p className="text-xs text-[#a99e91] mb-4 font-light">
+                        {gift.subtitle}
+                      </p>
+
+                      {/* Unwrapped Message */}
+                      {isOpen ? (
+                        <div className="p-4 rounded-xl bg-[#120d0b] border border-[#e2a57f]/40 text-[#f3cbb5] animate-scaleUp shadow-inner relative select-text">
+                          <div className="text-[10px] font-mono text-[#e2a57f] tracking-widest uppercase mb-1.5 flex items-center gap-1">
+                            <Sparkles size={11} /> Unwrapped Gift:
+                          </div>
+                          <p className="font-handwriting text-2xl leading-relaxed text-[#fdf0e6]">
+                            {gift.secret}
+                          </p>
+                        </div>
+                      ) : (
+                        <div
+                          onClick={() => toggleBox(gift.id)}
+                          className="p-6 rounded-xl bg-[#1a1412] border border-dashed border-[#e2a57f]/30 text-center cursor-pointer hover:bg-[#221a17] transition-all group"
+                        >
+                          <div className="w-14 h-14 mx-auto rounded-full bg-[#e2a57f]/15 border border-[#e2a57f]/40 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform mb-2">
+                            🎁
+                          </div>
+                          <span className="text-xs font-medium text-[#e2a57f] tracking-wider uppercase">
+                            Click to Unwrap Box
+                          </span>
+                          <p className="text-[11px] text-[#8e8276] mt-1 font-light">
+                            Contains a special surprise from Anfu
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Button Action */}
+                    <button
+                      type="button"
+                      onClick={() => toggleBox(gift.id)}
+                      className={`w-full mt-4 py-2.5 px-4 rounded-xl text-xs font-semibold tracking-wider uppercase transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                        isOpen
+                          ? 'bg-white/10 hover:bg-white/15 text-[#fbf7ee] border border-white/15'
+                          : 'bg-gradient-to-r from-[#e2a57f] to-[#f3cbb5] text-[#14100d] hover:brightness-110 shadow-md'
+                      }`}
+                    >
+                      {isOpen ? (
+                        <>
+                          <RefreshCw size={12} />
+                          <span>Close Box 0{gift.id}</span>
+                        </>
+                      ) : (
+                        <>
+                          <Gift size={13} />
+                          <span>Unwrap Box 0{gift.id} ♡</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
-                <p className="mt-3 text-xs sm:text-sm font-serif italic text-[#f3cbb5] drop-shadow-md tracking-wide">
-                  Click to reveal your personal love promises and coupons
-                </p>
-              </div>
-            </div>
+              );
+            })}
           </div>
         </div>
 
@@ -399,7 +490,7 @@ export default function WishSection({ onNavigate }) {
           <div className="relative max-w-[320px] sm:max-w-[360px] mx-auto">
             {/* Outer Luxury Phone Body Border */}
             <div className="relative rounded-[2.8rem] p-3 sm:p-3.5 bg-gradient-to-b from-[#2e241f] via-[#1a1411] to-[#0e0c0b] border-2 border-[#e2a57f]/40 shadow-[0_25px_60px_rgba(0,0,0,0.95),0_0_40px_rgba(226,165,127,0.2)]">
-              
+
               {/* Dynamic Top Speaker / Camera Notch */}
               <div className="flex items-center justify-center gap-2 mb-2.5">
                 <div className="w-16 h-3 bg-black/80 rounded-full border border-white/10 flex items-center justify-center">

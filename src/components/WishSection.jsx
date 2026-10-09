@@ -152,7 +152,7 @@ export default function WishSection({ onNavigate }) {
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-[#e2a57f]/10 rounded-full blur-[140px] pointer-events-none"></div>
 
       <div className="max-w-5xl mx-auto relative z-10">
-        
+
         {/* Section Header */}
         <div className="text-center mb-16">
           <p className="text-xs sm:text-sm tracking-[0.35em] text-[#e2a57f] uppercase font-medium mb-3">
@@ -174,13 +174,12 @@ export default function WishSection({ onNavigate }) {
         {/* 1. Interactive Birthday Cake & Realistic Candle Flame Animation */}
         <div className="glass-panel rounded-3xl p-6 sm:p-10 mb-16 border border-[#e2a57f]/20 relative overflow-hidden">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            
+
             {/* Real Cake Photo with Interactive Candle Flame Setup */}
             <div
               onClick={candleLit ? handleBlowCandle : undefined}
-              className={`relative group rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-[#14100e] cursor-pointer select-none transition-all duration-700 ${
-                candleLit ? 'hover:shadow-[0_0_35px_rgba(226,165,127,0.3)]' : ''
-              }`}
+              className={`relative group rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-[#14100e] cursor-pointer select-none transition-all duration-700 ${candleLit ? 'hover:shadow-[0_0_35px_rgba(226,165,127,0.3)]' : ''
+                }`}
             >
               <img
                 src="/assets/birthday_cake.jpg?v=2"
@@ -189,9 +188,8 @@ export default function WishSection({ onNavigate }) {
               />
               {/* Darkening ambient vignette when candle is blown */}
               <div
-                className={`absolute inset-0 transition-opacity duration-700 pointer-events-none ${
-                  candleLit ? 'bg-gradient-to-t from-black/50 via-transparent to-black/15' : 'bg-black/55'
-                }`}
+                className={`absolute inset-0 transition-opacity duration-700 pointer-events-none ${candleLit ? 'bg-gradient-to-t from-black/50 via-transparent to-black/15' : 'bg-black/55'
+                  }`}
               ></div>
 
               {/* Interactive Flame & Smoke directly over the real candle flame (X: 44%, Y: 63%) */}
@@ -383,71 +381,118 @@ export default function WishSection({ onNavigate }) {
           </div>
         </div>
 
-        {/* 3. AI Birthday Video Showcase */}
+        {/* 3. Birthday Reel Showcase (Smartphone / Reel Format 9:16) */}
         <div className="glass-panel rounded-3xl p-6 sm:p-10 border border-[#e2a57f]/20 relative">
           <div className="text-center mb-8">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#e2a57f]/15 border border-[#e2a57f]/30 text-[#e2a57f] text-[11px] tracking-widest uppercase font-semibold mb-3">
-              <Video size={13} /> Special Tribute Video
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#e2a57f]/15 border border-[#e2a57f]/30 text-[#e2a57f] text-[11px] tracking-widest uppercase font-semibold mb-3">
+              <Video size={13} /> Birthday Reel Tribute
             </span>
             <h3 className="font-serif text-3xl sm:text-4xl text-[#fbf7ee] font-light">
-              Fidhuttyyyy's Birthday Cinema
+              Fidhuttyyyy's Birthday Reel
             </h3>
-            <p className="text-xs sm:text-sm text-[#d5ccc1] max-w-lg mx-auto mt-2">
-              A special celebration video crafted with love for Fidhuttyyyy.
+            <p className="text-xs sm:text-sm text-[#d5ccc1] max-w-md mx-auto mt-2 font-light">
+              A vertical celebration reel created especially for you ♡
             </p>
           </div>
 
-          {/* Cinema Frame */}
-          <div className="relative aspect-video max-w-3xl mx-auto rounded-2xl overflow-hidden bg-black border border-[#e2a57f]/30 shadow-[0_20px_50px_rgba(0,0,0,0.8)] flex items-center justify-center group">
-            {videoFile ? (
-              <>
+          {/* Smartphone / Reel Frame (Vertical 9:16) */}
+          <div className="relative max-w-[320px] sm:max-w-[360px] mx-auto">
+            {/* Outer Luxury Phone Body Border */}
+            <div className="relative rounded-[2.8rem] p-3 sm:p-3.5 bg-gradient-to-b from-[#2e241f] via-[#1a1411] to-[#0e0c0b] border-2 border-[#e2a57f]/40 shadow-[0_25px_60px_rgba(0,0,0,0.95),0_0_40px_rgba(226,165,127,0.2)]">
+              
+              {/* Dynamic Top Speaker / Camera Notch */}
+              <div className="flex items-center justify-center gap-2 mb-2.5">
+                <div className="w-16 h-3 bg-black/80 rounded-full border border-white/10 flex items-center justify-center">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#e2a57f]/60"></span>
+                </div>
+              </div>
+
+              {/* Reel Screen Display (aspect-[9/16]) */}
+              <div
+                onClick={toggleVideoPlay}
+                className="relative aspect-[9/16] w-full rounded-[2.2rem] overflow-hidden bg-black cursor-pointer group shadow-inner select-none"
+              >
                 <video
                   ref={videoRef}
                   src={videoFile}
-                  controls
                   playsInline
+                  loop
                   onPlay={() => setIsPlayingVideo(true)}
                   onPause={() => setIsPlayingVideo(false)}
                   onEnded={() => setIsPlayingVideo(false)}
-                  className="w-full h-full object-contain bg-black"
+                  className="w-full h-full object-cover"
                 />
-                {!isPlayingVideo && (
-                  <div
-                    onClick={toggleVideoPlay}
-                    className="absolute inset-0 bg-black/45 backdrop-blur-[2px] flex flex-col items-center justify-center cursor-pointer transition-all hover:bg-black/30 group/btn"
-                  >
-                    <div className="w-20 h-20 rounded-full bg-[#e2a57f] hover:bg-[#f3cbb5] text-[#14100d] flex items-center justify-center shadow-[0_0_30px_rgba(226,165,127,0.6)] group-hover/btn:scale-110 active:scale-95 transition-all">
-                      <Play size={32} className="ml-1 fill-current" />
-                    </div>
-                    <p className="mt-4 text-sm font-serif italic text-[#fbf7ee] tracking-wider drop-shadow-md">
-                      Play Celebration Video ♡
-                    </p>
+
+                {/* Reel Header Floating Info (Top bar inside video) */}
+                <div className="absolute top-3 inset-x-3 flex items-center justify-between z-20 pointer-events-none">
+                  <div className="flex items-center gap-2 bg-black/55 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
+                    <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                    <span className="text-[10px] text-white font-mono tracking-wider">REEL • FOR FIDHUTTYYYY</span>
                   </div>
-                )}
-              </>
-            ) : (
-              <div className="relative w-full h-full flex flex-col items-center justify-center p-6 text-center bg-radial from-[#241c17] to-[#0c0a09]">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[#e2a57f]/10 border border-[#e2a57f]/40 flex items-center justify-center mb-4 relative">
-                  <Heart size={36} className="text-[#e2a57f] animate-heart-pulse" fill="#e2a57f" />
-                  <span className="absolute inset-0 rounded-full border border-[#e2a57f]/30 animate-ping opacity-30"></span>
+
+                  {/* Audio Mute/Unmute toggle (clickable) */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (videoRef.current) {
+                        videoRef.current.muted = !videoRef.current.muted;
+                        setIsVideoMuted(videoRef.current.muted);
+                      }
+                    }}
+                    className="w-8 h-8 rounded-full bg-black/60 backdrop-blur-md text-white hover:bg-black/90 flex items-center justify-center pointer-events-auto border border-white/15 transition-transform active:scale-90"
+                    title={isVideoMuted ? "Unmute" : "Mute"}
+                  >
+                    {isVideoMuted ? <VolumeX size={14} /> : <Volume2 size={14} />}
+                  </button>
                 </div>
 
-                <h4 className="font-serif text-xl sm:text-2xl text-[#fbf7ee] tracking-wide mb-2">
-                  AI Birthday Video for Fidhuttyyyy
-                </h4>
-                <p className="text-xs sm:text-sm text-[#d5ccc1] max-w-md font-light mb-5">
-                  Slot reserved for the AI generated celebration video. Click below to load your video file now or anytime later!
-                </p>
+                {/* Paused Overlay: Glowing Reel Play Button */}
+                {!isPlayingVideo && (
+                  <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px] flex flex-col items-center justify-center z-10 transition-all">
+                    <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-[#e2a57f] text-[#14100d] flex items-center justify-center shadow-[0_0_35px_rgba(226,165,127,0.8)] transform group-hover:scale-110 active:scale-95 transition-all">
+                      <Play size={32} className="ml-1 fill-current" />
+                    </div>
+                    <span className="mt-4 px-4 py-1.5 rounded-full bg-black/80 backdrop-blur-md text-[#fbf7ee] text-xs font-medium tracking-wider border border-[#e2a57f]/40 shadow-lg">
+                      Tap to Watch Reel ♡
+                    </span>
+                  </div>
+                )}
 
-                <button
-                  onClick={() => fileInputRef.current?.click()}
-                  className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#e2a57f]/20 hover:bg-[#e2a57f] text-[#fbf7ee] hover:text-[#181514] font-medium text-xs tracking-widest uppercase transition-all duration-300 border border-[#e2a57f]/50 cursor-pointer shadow-lg"
-                >
-                  <Upload size={14} />
-                  <span>Choose Video File (.mp4 / .webm)</span>
-                </button>
+                {/* Playing Bottom Reel Details (Instagram Reel Style) */}
+                <div className="absolute bottom-4 inset-x-4 z-20 flex items-end justify-between pointer-events-none">
+                  <div className="flex-1 pr-2">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="w-6 h-6 rounded-full bg-[#e2a57f] flex items-center justify-center text-[10px] font-bold text-black">
+                        ♡
+                      </span>
+                      <span className="text-xs font-semibold text-white drop-shadow-md">
+                        fidhuttyyyy
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-[#fbf7ee] drop-shadow-md line-clamp-2 font-light">
+                      Happy Birthday to my favorite girl in the entire world ✨
+                    </p>
+                    <div className="flex items-center gap-1.5 text-[10px] text-[#e2a57f] mt-1 drop-shadow-sm font-mono">
+                      <span>🎵</span>
+                      <span className="truncate">Birthday Celebration • Special Melody</span>
+                    </div>
+                  </div>
+
+                  {/* Reel floating hearts button */}
+                  <div className="flex flex-col items-center gap-3 pointer-events-auto">
+                    <div className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-md border border-white/10 flex items-center justify-center text-white hover:text-red-400 transition-colors">
+                      <Heart size={18} fill="#e2a57f" className="text-[#e2a57f]" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Subtle Bottom Progress Gradient */}
+                <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/85 via-black/40 to-transparent pointer-events-none z-10"></div>
               </div>
-            )}
+
+              {/* Bottom Phone Chin Home Bar */}
+              <div className="w-28 h-1 bg-white/20 rounded-full mx-auto mt-3"></div>
+            </div>
           </div>
         </div>
 
@@ -455,146 +500,6 @@ export default function WishSection({ onNavigate }) {
         <ChapterPagination currentPage="wish" onNavigate={onNavigate} />
 
       </div>
-
-      {/* Real Photo Gift Box Modal: Full Romantic Keepsake Letter Modal */}
-      {isGiftModalOpen && (
-        <div
-          onClick={handleCloseGiftModal}
-          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-fadeIn"
-        >
-          <div
-            className="relative w-full max-w-2xl bg-[#191412] border border-[#e2a57f]/50 rounded-3xl p-6 sm:p-8 shadow-[0_25px_70px_rgba(0,0,0,0.9)] overflow-hidden animate-scaleUp"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Ambient Golden Background Glow */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[#e2a57f]/10 rounded-full blur-[100px] pointer-events-none"></div>
-
-            {/* Close Button */}
-            <button
-              onClick={handleCloseGiftModal}
-              className="absolute top-5 right-5 w-9 h-9 rounded-full bg-white/10 hover:bg-[#e2a57f] hover:text-[#14100d] text-[#fbf7ee] flex items-center justify-center transition-all cursor-pointer border border-white/10 z-10"
-              aria-label="Close Surprise Modal"
-            >
-              <X size={18} />
-            </button>
-
-            {/* Modal Top Header */}
-            <div className="text-center mb-6 pr-6">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#e2a57f]/15 border border-[#e2a57f]/30 text-[#e2a57f] text-[10px] tracking-widest uppercase font-semibold mb-2">
-                <Gift size={12} /> Unboxed With Love
-              </span>
-              <h3 className="font-serif text-2xl sm:text-3xl text-[#fbf7ee] font-light">
-                Surprises For Fidhuttyyyy
-              </h3>
-            </div>
-
-            {/* 3 Gift Tabs */}
-            <div className="flex items-center justify-center gap-2 mb-6 border-b border-white/10 pb-4">
-              {gifts.map((g) => {
-                const isActive = selectedGiftId === g.id;
-                return (
-                  <button
-                    key={g.id}
-                    onClick={() => {
-                      romanticAudio.playHeartPop();
-                      setSelectedGiftId(g.id);
-                    }}
-                    className={`flex-1 py-2 px-2 sm:px-4 rounded-xl text-xs font-medium tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer border ${
-                      isActive
-                        ? 'bg-[#e2a57f] text-[#14100d] font-semibold border-[#e2a57f] shadow-md'
-                        : 'bg-[#14100e] text-[#d5ccc1] border-white/10 hover:border-[#e2a57f]/40 hover:text-white'
-                    }`}
-                  >
-                    <span>{g.icon}</span>
-                    <span className="hidden sm:inline">Gift 0{g.id}</span>
-                    <span className="text-[11px] opacity-90 truncate">{g.tag}</span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Active Gift Keepsake Parchment Display */}
-            {(() => {
-              const currentGift = gifts.find((g) => g.id === selectedGiftId) || gifts[0];
-              return (
-                <div className="animate-fadeIn">
-                  <div className="p-6 sm:p-7 rounded-2xl bg-[#140e0b] border border-[#e2a57f]/40 shadow-inner relative overflow-hidden">
-                    {/* Top Ribbon Stripe */}
-                    <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-[#b37d46] via-[#ffd89b] to-[#b37d46]"></div>
-
-                    <div className="flex items-center justify-between mb-3 pt-1 border-b border-[#e2a57f]/20 pb-2">
-                      <div className="flex items-center gap-2">
-                        <span className="text-3xl">{currentGift.icon}</span>
-                        <div>
-                          <span className="text-[10px] font-mono tracking-widest text-[#e2a57f] uppercase font-bold block">
-                            GIFT 0{currentGift.id} • {currentGift.tag}
-                          </span>
-                          <h4 className="font-serif text-xl sm:text-2xl text-[#fbf7ee] font-medium leading-tight">
-                            {currentGift.title}
-                          </h4>
-                        </div>
-                      </div>
-                    </div>
-
-                    <p className="text-xs text-[#a99e91] font-light mb-4">
-                      {currentGift.subtitle}
-                    </p>
-
-                    {/* Handwritten Heartfelt Message */}
-                    <div className="p-4 sm:p-5 rounded-xl bg-[#1c1613] border border-[#e2a57f]/25">
-                      <p className="font-handwriting text-2xl sm:text-3xl text-[#f3cbb5] leading-relaxed">
-                        {currentGift.secret}
-                      </p>
-                    </div>
-
-                    {/* Signature */}
-                    <div className="mt-4 flex items-center justify-between text-xs text-[#e2a57f] pt-1">
-                      <span className="font-mono text-[10px] tracking-widest uppercase">
-                        SEALED WITH LOVE ♡
-                      </span>
-                      <span className="font-serif italic text-sm text-[#fbf7ee]">
-                        — Forever Yours, Anfu
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Modal Bottom Navigation */}
-                  <div className="mt-6 flex items-center justify-between gap-3 text-xs">
-                    <button
-                      onClick={() => {
-                        romanticAudio.playClick();
-                        setSelectedGiftId((prev) => (prev > 1 ? prev - 1 : 3));
-                      }}
-                      className="inline-flex items-center gap-1 px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 text-[#d5ccc1] hover:text-white border border-white/10 cursor-pointer transition-colors"
-                    >
-                      <ChevronLeft size={14} />
-                      <span>Previous</span>
-                    </button>
-
-                    <button
-                      onClick={handleCloseGiftModal}
-                      className="text-[#a99e91] hover:text-[#fbf7ee] text-xs underline underline-offset-4 cursor-pointer py-1"
-                    >
-                      Fold & Close Box
-                    </button>
-
-                    <button
-                      onClick={() => {
-                        romanticAudio.playClick();
-                        setSelectedGiftId((prev) => (prev < 3 ? prev + 1 : 1));
-                      }}
-                      className="inline-flex items-center gap-1 px-4 py-2 rounded-full bg-[#e2a57f] hover:bg-[#f3cbb5] text-[#14100d] font-semibold cursor-pointer transition-colors shadow-md"
-                    >
-                      <span>Next Surprise</span>
-                      <ChevronRight size={14} />
-                    </button>
-                  </div>
-                </div>
-              );
-            })()}
-          </div>
-        </div>
-      )}
     </section>
   );
 }
